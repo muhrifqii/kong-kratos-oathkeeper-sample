@@ -28,7 +28,7 @@ services:
   # DB
   #
   db:
-    image: postgres:latest
+    image: postgres:13.15
     restart: on-failure
     environment:
       POSTGRES_USER: postgres
@@ -45,7 +45,7 @@ services:
       - intranet
 
   kong_db:
-    image: postgres:latest
+    image: postgres:13.15
     restart: on-failure
     environment:
       POSTGRES_DB: kong
@@ -64,9 +64,21 @@ services:
   #
   # KONG
   #
+  kong_migrations:
+    depends_on:
+      - kong_db
+    image: "kong:3.6"
+    command: kong migrations bootstrap
+    restart: on-failure
+    environment:
+      <<: *kong-env
+    networks:
+      - intranet
+
   kong:
-    # safe image
-    image: "kong:latest"
+    depends_on:
+      - kong_migrations
+    image: "kong:3.6"
     # both of the following two fail
     # platform: linux/arm64
     # image: 'arm64v8/kong'
