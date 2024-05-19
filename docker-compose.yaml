@@ -192,3 +192,18 @@ services:
       - "4437:4437"
     networks:
       - intranet
+
+  #
+  # APP
+  #
+  rust_be:
+    build:
+      context: app/rust_be
+    networks:
+      - intranet
+  
+  go_be:
+    build:
+      context: app/go_be
+    networks:
+      - intranet
